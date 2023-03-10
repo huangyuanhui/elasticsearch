@@ -27,9 +27,11 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ import java.util.Map;
 @Service
 public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHotelService {
 
-    @Autowired
+    @Resource
     private RestHighLevelClient client;
 
     /**

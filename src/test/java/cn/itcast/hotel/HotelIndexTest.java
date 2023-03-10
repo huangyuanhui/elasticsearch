@@ -24,7 +24,8 @@ import static cn.itcast.hotel.constants.HotelConstants.MAPPING_TEMPLATE;
 public class HotelIndexTest {
 
     private RestHighLevelClient client;
-
+    // 妹妹记得把照片删了 我把剩下的117也转给你
+    // 微信转了
     @BeforeEach
     public void setUp() {
         this.client = new RestHighLevelClient(RestClient.builder(
