@@ -1,6 +1,11 @@
 package cn.itcast.hotel.constants;
 
+/**
+ * 创建索引库的DSL语句
+ */
 public class HotelConstants {
+
+    // 映射模板
     public static final String MAPPING_TEMPLATE = "{\n" +
             "  \"mappings\": {\n" +
             "    \"properties\": {\n" +

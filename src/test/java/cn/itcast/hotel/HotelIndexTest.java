@@ -54,11 +54,11 @@ public class HotelIndexTest {
      */
     @Test
     public void createHotelIndex() throws IOException {
-        // 1：创建请求Request对象
+        // 第1步：创建请求Request对象
         CreateIndexRequest createIndexRequest = new CreateIndexRequest("hotel");
-        //2：准备请求的参数：DSL语句
+        // 第2步：准备请求的参数：DSL语句
         createIndexRequest.source(MAPPING_TEMPLATE, XContentType.JSON);
-        // 3：发送请求
+        // 第3步：发送请求（第一个参数是Request对象，第二个参数一般走默认）
         client.indices().create(createIndexRequest, RequestOptions.DEFAULT);
     }
 
