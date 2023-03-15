@@ -108,21 +108,20 @@ public class HotelDocumentTest {
      */
     @Test
     public void testPatchAddDocument() throws IOException {
+        // 1：创建BulkRequest
         BulkRequest bulkRequest = new BulkRequest();
-
-        /*
-        IPage<Hotel> page = new Page<>(1, 10);
-        hotelService.page(page);
-        List<Hotel> hotels = page.getRecords();
-        */
 
         List<Hotel> hotels = hotelService.list();
         hotels.forEach(data -> {
             HotelDoc hotelDoc = new HotelDoc(data);
+            // 2：准备参数，添加多个新增的IndexRequest
             IndexRequest indexRequest = new IndexRequest("hotel").id(hotelDoc.getId().toString());
             indexRequest.source(JSON.toJSONString(hotelDoc), XContentType.JSON);
+            // add参数可以有IndexRequest、DeleteRequest、UpdateRequest，也就是说，你可以批量做新增、删除、修改
             bulkRequest.add(indexRequest);
         });
+
+        // 3：发送请求
         client.bulk(bulkRequest, RequestOptions.DEFAULT);
     }
 }
