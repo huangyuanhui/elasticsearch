@@ -29,7 +29,7 @@ public class HotelIndexTest {
     public void setUp() {
         // 初始化RestHighLevelClient
         this.client = new RestHighLevelClient(RestClient.builder(
-             HttpHost.create("http://120.77.168.189:9200")
+                HttpHost.create("http://120.77.168.189:9200")
         ));
     }
 
@@ -50,6 +50,7 @@ public class HotelIndexTest {
 
     /**
      * 创建索引库
+     *
      * @throws IOException
      */
     @Test
@@ -64,25 +65,27 @@ public class HotelIndexTest {
 
     /**
      * 删除索引库
+     *
      * @throws IOException
      */
     @Test
-    public void  testDeleteHotelIndex() throws IOException {
+    public void testDeleteHotelIndex() throws IOException {
         // 1：创建请求Request对象
         DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest("hotel");
-        // 2：发送请求
+        // 2：发送请求：client.indices()返回的IndicesClient对象，封装了操作索引库的API
         client.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
     }
 
     /**
      * 判断索引库是否存在
+     *
      * @throws IOException
      */
     @Test
     public void testHotelIndexExist() throws IOException {
-        // 1：创建请求Request对象
+        // 1：创建请求Request对象：判断索引库是否存在，等于就是查询嘛
         GetIndexRequest getIndexRequest = new GetIndexRequest("hotel");
-        // 2：发送请求
+        // 2：发送请求，判断索引库是否存在有返回值
         boolean exists = client.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
         System.out.println("exists = " + exists);
     }
