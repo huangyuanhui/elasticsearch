@@ -24,10 +24,10 @@ import static cn.itcast.hotel.constants.HotelConstants.MAPPING_TEMPLATE;
 public class HotelIndexTest {
 
     private RestHighLevelClient client;
-    // 妹妹记得把照片删了 我把剩下的117也转给你
-    // 微信转了
+
     @BeforeEach
     public void setUp() {
+        // 初始化RestHighLevelClient
         this.client = new RestHighLevelClient(RestClient.builder(
              HttpHost.create("http://120.77.168.189:9200")
         ));
@@ -35,11 +35,16 @@ public class HotelIndexTest {
 
     @AfterEach
     public void tearDown() throws IOException {
+        // 释放资源
         this.client.close();
     }
 
     @Test
     public void testInit() {
+        /**
+         * 打印client信息，查看初始化是否成功：
+         * client = org.elasticsearch.client.RestHighLevelClient@51e3d37e
+         */
         System.out.println("client = " + client);
     }
 
