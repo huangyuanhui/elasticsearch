@@ -69,13 +69,14 @@ public class HotelDocumentTest {
     }
 
     @Test
-    public void testGetDocument() throws IOException {
+    public void testGetDocumentById() throws IOException {
         // 1：准备request对象
-        GetRequest getRequest = new GetRequest("hotel", "47066");
+        GetRequest getRequest = new GetRequest("hotel", "61083");
         // 2：发送请求
         GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
-        // 3：解析数据
+        // 3：解析响应结果数据
         String source = getResponse.getSourceAsString();
+
         HotelDoc hotelDoc = JSON.parseObject(source, HotelDoc.class);
         System.out.println("hotelDoc = " + hotelDoc);
     }
