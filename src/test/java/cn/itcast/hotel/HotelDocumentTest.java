@@ -96,7 +96,7 @@ public class HotelDocumentTest {
 
     @Test
     public void testDeleteDocumentById() throws IOException {
-        // 1：准备request对象
+        // 1：准备request对象：根据id删除
         DeleteRequest deleteRequest = new DeleteRequest("hotel", "61083");
         // 2：发送请求
         client.delete(deleteRequest, RequestOptions.DEFAULT);
