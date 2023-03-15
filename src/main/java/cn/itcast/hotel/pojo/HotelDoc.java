@@ -4,6 +4,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * 与索引库结构一致的hotel实体类
+ */
 @ToString
 @Data
 @NoArgsConstructor

@@ -55,11 +55,16 @@ public class HotelDocumentTest {
     public void testAddDocument() throws IOException {
         Hotel hotel = hotelService.getById(61083);
         HotelDoc hotelDoc = new HotelDoc(hotel);
-        // 1：准备request对象
+        // 1：准备request对象（注意，索引库中对id的要求都是keyword，即要是字符串，所以要转换）
         IndexRequest indexRequest = new IndexRequest("hotel").id(hotelDoc.getId().toString());
         // 2：准备json文档
         indexRequest.source(JSON.toJSONString(hotelDoc), XContentType.JSON);
-        // 3：发送请求
+        /*
+         * 3：发送请求，这里与索引库发请求的代码很接近，差别是此处不需要client.indices()，只是用client就行
+         * ，因为indices是操作索引库，这里我们操作的是文档，直接client.index(xxx,xxx)就行，index代表的
+         * 就是创建倒排索引的意思，添加文档不就是创建倒排索引吗
+         *
+         */
         client.index(indexRequest, RequestOptions.DEFAULT);
     }
 
