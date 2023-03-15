@@ -85,7 +85,7 @@ public class HotelDocumentTest {
     public void testUpdateDocumentById() throws IOException {
         // 1：准备request对象
         UpdateRequest updateRequest = new UpdateRequest("hotel", "61083");
-        // 2:准备参数，每两个参数为一对key value
+        // 2:准备参数，每两个参数为一对key value，需要更新什么字段数据就写什么，不需要全部字段都写
         updateRequest.doc(
                 "price", 988,
                 "starName", "四钻"
