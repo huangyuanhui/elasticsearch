@@ -50,7 +50,7 @@ public class HotelSearchTest {
     }
 
     /**
-     * 1:匹配所有：match_all
+     * 1:全文检索查询，匹配所有：match_all
      *
      * @throws IOException
      */
