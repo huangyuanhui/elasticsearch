@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * 搜索
+ * RestClient搜索
  */
 @SpringBootTest
 public class HotelSearchTest {
