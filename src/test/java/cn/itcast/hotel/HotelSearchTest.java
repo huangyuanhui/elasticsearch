@@ -98,6 +98,7 @@ public class HotelSearchTest {
         request.source().query(
                 QueryBuilders.multiMatchQuery("上海外滩如家", "city", "name", "brand", "business")
         );
+        // 3：发送请求
         handlerResponse(request);
     }
 
@@ -116,7 +117,7 @@ public class HotelSearchTest {
         request.source().query(
                 QueryBuilders.termQuery("city", "北京")
         );
-        // x
+        // 3：发送请求
         handlerResponse(request);
     }
 
@@ -131,6 +132,7 @@ public class HotelSearchTest {
         request.source().query(
                 QueryBuilders.rangeQuery("price").gte(1000).lte(2000)
         );
+        // 3：发送请求
         handlerResponse(request);
     }
 
