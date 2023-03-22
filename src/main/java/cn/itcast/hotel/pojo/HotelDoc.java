@@ -23,7 +23,7 @@ public class HotelDoc {
     private String location;
     private String pic;
 
-    private Object distance;
+    private Object distance;  // 保存祭距离值
     private Boolean isAD;
 
     public HotelDoc(Hotel hotel) {

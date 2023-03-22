@@ -18,5 +18,5 @@ public class RequestParams {
     private Integer minPrice;   // 最小值价格
     private Integer maxPrice;   // 最大值价格
 
-    private String location;
+    private String location; // 地理坐标
 }
