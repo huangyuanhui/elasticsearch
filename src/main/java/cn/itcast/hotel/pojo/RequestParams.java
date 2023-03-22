@@ -12,11 +12,11 @@ public class RequestParams {
     private Integer size;   // 每页大小
     private String sortBy;  // 排序字段
 
-    private String brand;
-    private String city;
-    private String starName;
-    private Integer minPrice;
-    private Integer maxPrice;
+    private String brand;   // 品牌
+    private String city;    // 城市
+    private String starName;    // 星级
+    private Integer minPrice;   // 最小值价格
+    private Integer maxPrice;   // 最大值价格
 
     private String location;
 }

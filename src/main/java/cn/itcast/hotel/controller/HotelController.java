@@ -24,8 +24,8 @@ public class HotelController {
         return hotelService.search(params);
     }
 
-    @PostMapping("/filters")
+    /*@PostMapping("/filters")
     public Map<String, List<String>> getFilters(@RequestBody RequestParams params) {
         return hotelService.filters(params);
-    }
+    }*/
 }
