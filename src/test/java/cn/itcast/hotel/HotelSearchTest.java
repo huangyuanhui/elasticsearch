@@ -141,6 +141,7 @@ public class HotelSearchTest {
      */
     /**
      * 4.1：中心点附近查询 distance查询
+     *
      * @throws IOException
      */
     @Test
@@ -159,6 +160,7 @@ public class HotelSearchTest {
 
     /**
      * 4.2：区域范围查询
+     *
      * @throws IOException
      */
     @Test
@@ -203,6 +205,7 @@ public class HotelSearchTest {
      */
     /**
      * 6.1：排序
+     *
      * @throws IOException
      */
     @Test
@@ -212,11 +215,13 @@ public class HotelSearchTest {
         // 2：准备DSL
         request.source().query(QueryBuilders.matchAllQuery());
         request.source().sort("price", SortOrder.ASC);
+        // 3：发送请求
         handlerResponse(request);
     }
 
     /**
      * 6.2：分页
+     *
      * @throws IOException
      */
     @Test
@@ -227,11 +232,13 @@ public class HotelSearchTest {
         request.source().query(QueryBuilders.matchAllQuery());
         request.source().sort("score", SortOrder.DESC).sort("price", SortOrder.ASC);
         request.source().from(0).size(5);
+        // 3：发送请求
         handlerResponse(request);
     }
 
     /**
      * 6.3：高亮
+     *
      * @throws IOException
      */
     @Test
@@ -240,13 +247,48 @@ public class HotelSearchTest {
         SearchRequest request = new SearchRequest("hotel");
         // 2：准备DSL
         request.source().query(QueryBuilders.matchQuery("all", "如家"));
-        // 3：设置高亮
-        request.source().highlighter(new HighlightBuilder().field("name").field("brand").requireFieldMatch(false));
-        handlerResponse(request);
+        // 设置高亮
+        request.source().highlighter(
+                new HighlightBuilder()
+                        .field("name").field("brand")
+                        .requireFieldMatch(false)
+        );
+        // 3：发送请求
+        SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+        // 4：解析结果
+        SearchHits searchHits = response.getHits();
+        System.out.println("共搜索到 " + searchHits.getTotalHits().value + " 条记录");
+        // 默认10条
+        for (SearchHit searchHit : searchHits) {
+            // 4.1：得到source
+            String json = searchHit.getSourceAsString();
+            // 4.2：json的parse
+            HotelDoc hotelDoc = JSON.parseObject(json, HotelDoc.class);
+
+            // 4.3.1：获取高亮结果
+            Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
+            if (!CollectionUtils.isEmpty(highlightFields)) {
+                // 4.3.2：根据字段名获取高亮结果
+                HighlightField nameHighlightField = highlightFields.get("name");
+                // 4.3.3：获取高亮值
+                String name = nameHighlightField.getFragments()[0].toString();
+                // 4.3.4：覆盖非高亮结果
+                if (!StringUtils.isEmpty(name)) {
+                    hotelDoc.setName(name);
+                }
+                HighlightField brandHighlightField = highlightFields.get("name");
+                String brand = brandHighlightField.getFragments()[0].toString();
+                if (!StringUtils.isEmpty(brand)) {
+                    hotelDoc.setBrand(brand);
+                }
+            }
+            System.out.println("hotelDoc = " + hotelDoc);
+        }
     }
 
     /**
      * 处理响应结果
+     *
      * @param request
      * @throws IOException
      */
