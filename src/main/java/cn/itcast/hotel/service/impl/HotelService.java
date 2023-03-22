@@ -12,22 +12,16 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.geo.GeoPoint;
-import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
 import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -45,7 +39,7 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
     private RestHighLevelClient client;
 
     /**
-     * 升级版
+     * 搜索
      *
      * @param params
      * @return
@@ -53,7 +47,67 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
     @Override
     public PageResult search(RequestParams params) {
         try {
-            // 1：
+            // 1：准备Request
+            SearchRequest request = new SearchRequest("hotel");
+            // 2：准备DSL
+            // 2.1：query
+            String searchKey = params.getKey();
+            if (searchKey == null || "".equals(searchKey)) {
+                // 查询所有match_all
+                request.source().query(QueryBuilders.matchAllQuery());
+            } else {
+                // 全文检索查询：match单字段查询
+                request.source().query(QueryBuilders.matchQuery("all", searchKey));
+            }
+            // 2.2：分页
+            int page = params.getPage();
+            int size = params.getSize();
+            request.source().from((page - 1) * size).size(size);
+            // 3：发送请求
+            SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+            // 4：解析响应结果
+            return handleResponse(response);
+        } catch (IOException e) {
+            // 抛出一个运行时异常
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 解析响应结果
+     *
+     * @param response
+     * @return
+     */
+    private PageResult handleResponse(SearchResponse response) {
+        // 4：解析响应
+        SearchHits searchHits = response.getHits();
+        // 4.1：获取总条数
+        long total = searchHits.getTotalHits().value;
+        // 4.2：文档数组
+        SearchHit[] hits = searchHits.getHits();
+        // 4.3：遍历
+        List<HotelDoc> hotels = new ArrayList<>();
+        for (SearchHit hit : hits) {
+            // 获取文档source
+            String json = hit.getSourceAsString();
+            // 反序列化
+            HotelDoc hotelDoc = JSON.parseObject(json, HotelDoc.class);
+            hotels.add(hotelDoc);
+        }
+        // 4.4：封装返回
+        return new PageResult(total, hotels);
+    }
+
+    /**
+     * 升级版
+     *
+     * @param params
+     * @return
+     */
+    /*@Override
+    public PageResult search(RequestParams params) {
+        try {
             // 1: request请求
             SearchRequest request = new SearchRequest("hotel");
             // 2：准备DSL
@@ -94,8 +148,7 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
+    }*/
     @Override
     public Map<String, List<String>> filters(RequestParams params) {
         try {

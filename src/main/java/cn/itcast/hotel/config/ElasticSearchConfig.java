@@ -6,6 +6,9 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 向Spring容器中注入RestHighLevelClient
+ */
 @Configuration
 public class ElasticSearchConfig {
 

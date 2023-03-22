@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 搜索接口
+ */
 @RestController
 @RequestMapping("/hotel")
 public class HotelController {
