@@ -181,7 +181,7 @@ public class HotelSearchTest {
     public void testBool() throws IOException {
         // 1：准备Request
         SearchRequest request = new SearchRequest("hotel");
-        // 2：准备DSL
+        // 2：准备DSL：查询核心API:QueryBuilders，所有查询条件都是由QueryBuilders构建的
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         // must
         queryBuilder.must(QueryBuilders.termQuery("city", "上海"));
