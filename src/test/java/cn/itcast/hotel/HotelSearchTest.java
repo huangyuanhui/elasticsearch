@@ -149,8 +149,11 @@ public class HotelSearchTest {
         SearchRequest request = new SearchRequest("hotel");
         // 2：准备DSL
         request.source().query(
-                QueryBuilders.geoDistanceQuery("location").point(31.21, 121.5).distance(10, DistanceUnit.KILOMETERS)
+                QueryBuilders.geoDistanceQuery("location")
+                        .point(31.21, 121.5)
+                        .distance(10, DistanceUnit.KILOMETERS)
         );
+        // 3：发送请求
         handlerResponse(request);
     }
 
@@ -164,8 +167,10 @@ public class HotelSearchTest {
         SearchRequest request = new SearchRequest("hotel");
         // 2：准备DSL
         request.source().query(
-                QueryBuilders.geoBoundingBoxQuery("location").setCornersOGC(new GeoPoint(30.9, 121.5), new GeoPoint(31.1, 121.7))
+                QueryBuilders.geoBoundingBoxQuery("location")
+                        .setCornersOGC(new GeoPoint(30.9, 121.5), new GeoPoint(31.1, 121.7))
         );
+        // 3：发送请求
         handlerResponse(request);
     }
 
