@@ -79,7 +79,7 @@ public class HotelSearchTest {
         SearchRequest request = new SearchRequest("hotel");
         // 2：准备DSL
         request.source().query(
-                QueryBuilders.matchQuery("all", "外滩如家")
+                QueryBuilders.matchQuery("all", "如家")
         );
         // 3：发送请求
         handlerResponse(request);
@@ -116,6 +116,7 @@ public class HotelSearchTest {
         request.source().query(
                 QueryBuilders.termQuery("city", "北京")
         );
+        // x
         handlerResponse(request);
     }
 
