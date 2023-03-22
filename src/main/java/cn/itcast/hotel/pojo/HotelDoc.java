@@ -24,7 +24,7 @@ public class HotelDoc {
     private String pic;
 
     private Object distance;  // 保存祭距离值
-    private Boolean isAD;
+    private Boolean isAD;   // 是否是付了钱买的广告
 
     public HotelDoc(Hotel hotel) {
         this.id = hotel.getId();

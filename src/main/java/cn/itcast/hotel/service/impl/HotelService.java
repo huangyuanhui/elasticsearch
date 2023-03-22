@@ -42,7 +42,7 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
     private RestHighLevelClient client;
 
     /**
-     * 搜索进阶版2：排序和地理查询
+     * 搜索进阶版2：广告指定 function_score
      *
      * @param params
      * @return
@@ -81,6 +81,47 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 搜索进阶版2：排序和地理查询
+     *
+     * @param params
+     * @return
+     */
+    /*@Override
+    public PageResult search(RequestParams params) {
+        try {
+            // 1：准备Request
+            SearchRequest request = new SearchRequest("hotel");
+
+            // 2：准备DSL
+            // 2.1：query
+            buildBasicQuery(request, params);
+            // 2.2：分页
+            int page = params.getPage();
+            int size = params.getSize();
+            request.source().from((page - 1) * size).size(size);
+            // 2.3：排序
+            String location = params.getLocation();
+            if (location != null && !"".equals(location)) {
+                request.source().sort(
+                        SortBuilders
+                                .geoDistanceSort("location", new GeoPoint(location))
+                                .order(SortOrder.ASC)
+                                .unit(DistanceUnit.KILOMETERS)
+                );
+            }
+
+            // 3：发送请求
+            SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+
+            // 4：解析响应结果
+            return handleResponse(response);
+        } catch (IOException e) {
+            // 抛出一个运行时异常
+            throw new RuntimeException(e);
+        }
+    }*/
 
     /**
      * 搜索进阶版1：条件过滤
@@ -156,7 +197,24 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
             boolQuery.filter(QueryBuilders
                     .rangeQuery("price").gte(minPrice).lte(maxPrice));
         }
-        request.source().query(boolQuery);
+
+        // 算分控制（以上的就是原始查询）
+        FunctionScoreQueryBuilder functionScoreQuery =
+                QueryBuilders.functionScoreQuery(
+                        // 原始查询，相关性算分的查询
+                        boolQuery,
+                        // function_score数组，算分函数数组
+                        new FunctionScoreQueryBuilder.FilterFunctionBuilder[]{
+                                // 其中一个unction_score函数，算分函数
+                                new FunctionScoreQueryBuilder.FilterFunctionBuilder(
+                                        // 过滤条件，满足条件的才会去改变相关性打分
+                                        QueryBuilders.termQuery("isAD", true),
+                                        // 算法
+                                        ScoreFunctionBuilders.weightFactorFunction(10)
+                                )
+                        });
+
+        request.source().query(functionScoreQuery);
     }
 
     /**
