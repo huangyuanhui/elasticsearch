@@ -333,6 +333,7 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
             throw new RuntimeException(e);
         }
     }*/
+
     @Override
     public Map<String, List<String>> filters(RequestParams params) {
         try {
@@ -343,19 +344,19 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
             // 2.1：query
             buildBasicQuery(params, request);
             // 2.2：聚合
-            buildAggregation(request);
+            buildAggregations(request);
             // 3：发送请求
             SearchResponse response = client.search(request, RequestOptions.DEFAULT);
             // 4：解析结果
             Map<String, List<String>> resultMap = new HashMap<>();
             Aggregations aggregations = response.getAggregations();
-            // 4.1：城市聚合
+            // 4.1：根据城市名称，获取城市聚合结果
             List<String> cities = getAggByName(aggregations, "cityAgg");
             resultMap.put("city", cities);
-            // 4.2：品牌聚合
+            // 4.2：根据品牌名称，获取品牌聚合结果
             List<String> brands = getAggByName(aggregations, "brandAgg");
             resultMap.put("brand", brands);
-            // 4.3：星级聚合
+            // 4.3：根据星级名称，获取星级聚合结果
             List<String> starNames = getAggByName(aggregations, "starAgg");
             resultMap.put("starName", starNames);
             return resultMap;
@@ -364,15 +365,15 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
         }
     }
 
-    //@Override
-    public Map<String, List<String>> filters_old() {
+    @Override
+    public Map<String, List<String>> filters() {
         try {
             // 1：构建请求
             SearchRequest request = new SearchRequest("hotel");
             // 2：准备DSL
             request.source().size(0);
-            // 2：聚合
-            buildAggregation(request);
+            // 2.1：聚合
+            buildAggregations(request);
             // 3：发送请求
             SearchResponse response = client.search(request, RequestOptions.DEFAULT);
             // 4：解析结果
@@ -393,27 +394,37 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
         }
     }
 
-    private void buildAggregation(SearchRequest request) {
-        // 2.1：城市
+    /**
+     * 构建聚合
+     * @param request
+     */
+    private void buildAggregations(SearchRequest request) {
+        // 2.1：城市聚合
         request.source().aggregation(AggregationBuilders
                 .terms("cityAgg")
                 .field("city")
                 .size(100)
         );
-        // 2.2：品牌
+        // 2.2：品牌聚合
         request.source().aggregation(AggregationBuilders
                 .terms("brandAgg")
                 .field("brand")
                 .size(100)
         );
-        // 2.3：星级
+        // 2.3：星级聚合
         request.source().aggregation(AggregationBuilders
                 .terms("starAgg")
-                .field("starName")
+                .field("starName.keyword")  // 索引库字段好像不支持驼峰？
                 .size(100)
         );
     }
 
+    /**
+     * 解析聚合结果
+     * @param aggregations
+     * @param aggName
+     * @return
+     */
     private List<String> getAggByName(Aggregations aggregations, String aggName) {
         Terms aggregation = aggregations.get(aggName);
         List<? extends Terms.Bucket> aggregationBuckets = aggregation.getBuckets();

@@ -17,5 +17,17 @@ public interface IHotelService extends IService<Hotel> {
      */
     PageResult search(RequestParams params);
 
+    /**
+     * 聚合
+     * @param params
+     * @return
+     */
     Map<String, List<String>> filters(RequestParams params);
+
+
+    /**
+     * 聚合
+     * @return
+     */
+    Map<String, List<String>> filters();
 }
