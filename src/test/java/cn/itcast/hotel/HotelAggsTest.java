@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * elastic高级（数据聚合 自动补全 数据同步 集群）
+ * elastic之数据聚合
  */
 @SpringBootTest
 public class HotelAggsTest {
@@ -39,6 +39,11 @@ public class HotelAggsTest {
         this.client.close();
     }
 
+    /**
+     * 聚合
+     *
+     * @throws IOException
+     */
     @Test
     public void testAggregation() throws IOException {
         // 1：准备request
@@ -49,8 +54,8 @@ public class HotelAggsTest {
         // 2.2：聚合
         searchRequest.source().aggregation(
                 AggregationBuilders
-                        .terms("brandAgg")
-                        .field("brand")
+                        .terms("brandAgg")  // 定义聚合类型和名称
+                        .field("brand") // 字段
                         .size(20)
         );
         // 3：发送请求
