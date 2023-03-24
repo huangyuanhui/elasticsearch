@@ -414,7 +414,8 @@ public class HotelService extends ServiceImpl<HotelMapper, Hotel> implements IHo
         // 2.3：星级聚合
         request.source().aggregation(AggregationBuilders
                 .terms("starAgg")
-                .field("starName.keyword")  // 索引库字段好像不支持驼峰？
+                // 要加keyword，索引库字段好像不支持驼峰？
+                .field("starName.keyword")
                 .size(100)
         );
     }
