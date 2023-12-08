@@ -15,9 +15,10 @@ logging:
     dateformat: MM-dd HH:mm:ss:SSS
 
 mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-  type-aliases-package: cn.itcast.hotel.pojo
   global-config:
     db-config:
       table-prefix: tb_
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: cn.itcast.hotel.pojo
+  mapper-locations: classpath:mapper/*.xml
