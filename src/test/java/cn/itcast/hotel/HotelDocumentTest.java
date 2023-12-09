@@ -76,7 +76,7 @@ public class HotelDocumentTest {
         GetResponse getResponse = client.get(getRequest, RequestOptions.DEFAULT);
         // 3：解析响应结果数据
         String source = getResponse.getSourceAsString();
-
+        // 4：json转对象
         HotelDoc hotelDoc = JSON.parseObject(source, HotelDoc.class);
         System.out.println("hotelDoc = " + hotelDoc);
     }
@@ -108,16 +108,17 @@ public class HotelDocumentTest {
      */
     @Test
     public void testPatchAddDocument() throws IOException {
+        List<Hotel> hotels = hotelService.list();
         // 1：创建BulkRequest
         BulkRequest bulkRequest = new BulkRequest();
-
-        List<Hotel> hotels = hotelService.list();
         hotels.forEach(data -> {
             HotelDoc hotelDoc = new HotelDoc(data);
             // 2：准备参数，添加多个新增的IndexRequest
-            IndexRequest indexRequest = new IndexRequest("hotel").id(hotelDoc.getId().toString());
-            indexRequest.source(JSON.toJSONString(hotelDoc), XContentType.JSON);
-            // add参数可以有IndexRequest、DeleteRequest、UpdateRequest，也就是说，你可以批量做新增、删除、修改
+            IndexRequest indexRequest = new IndexRequest("hotel")
+                    .id(hotelDoc.getId().toString())
+                    .source(JSON.toJSONString(hotelDoc), XContentType.JSON);
+            // add参数可以有IndexRequest、DeleteRequest、UpdateRequest，也就是说，
+            // 你可以批量做新增、删除、修改
             bulkRequest.add(indexRequest);
         });
 
