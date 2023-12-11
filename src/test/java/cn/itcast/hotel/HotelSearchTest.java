@@ -233,7 +233,11 @@ public class HotelSearchTest {
         SearchRequest request = new SearchRequest("hotel");
         // 2：准备DSL
         request.source().query(QueryBuilders.matchAllQuery());
-        request.source().sort("score", SortOrder.DESC).sort("price", SortOrder.ASC);
+        // 排序
+        request.source()
+                .sort("score", SortOrder.DESC)
+                .sort("price", SortOrder.ASC);
+        //分页
         request.source().from(0).size(5);
         // 3：发送请求
         handlerResponse(request);
@@ -273,15 +277,15 @@ public class HotelSearchTest {
             if (!CollectionUtils.isEmpty(highlightFields)) {
                 // 4.3.2：根据字段名获取高亮结果
                 HighlightField nameHighlightField = highlightFields.get("name");
-                // 4.3.3：获取高亮值
-                String name = nameHighlightField.getFragments()[0].toString();
-                // 4.3.4：覆盖非高亮结果
-                if (!StringUtils.isEmpty(name)) {
+                if (nameHighlightField != null) {
+                    // 4.3.3：获取高亮值
+                    String name = nameHighlightField.getFragments()[0].toString();
+                    // 4.3.4：覆盖非高亮结果
                     hotelDoc.setName(name);
                 }
-                HighlightField brandHighlightField = highlightFields.get("name");
-                String brand = brandHighlightField.getFragments()[0].toString();
-                if (!StringUtils.isEmpty(brand)) {
+                HighlightField brandHighlightField = highlightFields.get("brand");
+                if (brandHighlightField != null) {
+                    String brand = brandHighlightField.getFragments()[0].toString();
                     hotelDoc.setBrand(brand);
                 }
             }
